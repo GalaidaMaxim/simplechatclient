@@ -1,15 +1,8 @@
 import { Button, TextField, Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useState } from "react";
-
-const BoxStyled = styled(Box)`
-  width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 30px;
-  box-shadow: 5px 5px 10px gray;
-  border-radius: 10px;
-`;
+import { ConnectionBlock } from "./components/ConnectionBlock";
+import { UsersList } from "./components/UsersList";
 
 const Background = styled(Box)`
   position: fixed;
@@ -36,6 +29,7 @@ function App() {
   const [name, setName] = useState("");
   const [socket, setSocket] = useState(null);
   const [users, setUsers] = useState([]);
+  console.log(name);
 
   const connect = () => {
     const socket = new WebSocket(`ws://193.169.241.74:3004?name=${name}`);
@@ -57,30 +51,14 @@ function App() {
   return (
     <div className="App">
       {!socket && (
-        <BoxStyled>
-          <Typography variant="h3">Введіть ім'я</Typography>
-          <TextField
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-          <Box>
-            <Button onClick={connect}>Приєднатись</Button>
-          </Box>
-        </BoxStyled>
+        <ConnectionBlock setName={setName} name={name} connect={connect} />
       )}
-      {socket && (
-        <BoxStyled>
-          <Typography>Список коритсувачів</Typography>
-          {users.map((item) => (
-            <Button key={item}>{item}</Button>
-          ))}
-        </BoxStyled>
-      )}
-      <Background>
+      {socket && <UsersList users={users} socket={socket} />}
+      {/* <Background>
         <Modal>
           <Typography variant="h2">Це модалка</Typography>
         </Modal>
-      </Background>
+      </Background> */}
     </div>
   );
 }
