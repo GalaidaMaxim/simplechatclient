@@ -29,16 +29,23 @@ function App() {
   const [name, setName] = useState("");
   const [socket, setSocket] = useState(null);
   const [users, setUsers] = useState([]);
-  console.log(name);
+  const [requestUser, setRequestUser] = useState("");
+  const [requustTo, setRequestTo] = useState("");
 
   const connect = () => {
-    const socket = new WebSocket(`ws://193.169.241.74:3004?name=${name}`);
+    // const socket = new WebSocket(`ws://193.169.241.74:3004?name=${name}`);
+    const socket = new WebSocket(`ws://localhost:3004?name=${name}`);
 
     socket.onmessage = (event) => {
       console.log(event.data);
       const message = JSON.parse(event.data);
       if (message.command === "userList") {
         setUsers(message.users);
+      } else if (message.command === "requestConnectionWith") {
+        setRequestUser(message.user);
+      } else if (message.command === "roomCreationRejected") {
+        setRequestUser("");
+        setRequestTo("");
       }
     };
 
@@ -48,17 +55,48 @@ function App() {
 
     setSocket(socket);
   };
+
+  const onReject = () => {
+    socket.send(
+      JSON.stringify({
+        command: "createRoomReject",
+        username: requestUser || requustTo,
+      })
+    );
+  };
   return (
     <div className="App">
       {!socket && (
         <ConnectionBlock setName={setName} name={name} connect={connect} />
       )}
-      {socket && <UsersList users={users} socket={socket} />}
-      {/* <Background>
-        <Modal>
-          <Typography variant="h2">Це модалка</Typography>
-        </Modal>
-      </Background> */}
+      {socket && (
+        <UsersList users={users} socket={socket} setRequestTo={setRequestTo} />
+      )}
+      {requestUser && (
+        <Background>
+          <Modal>
+            <p variant="h2">Запит на діключення від {requestUser}</p>
+            <Box>
+              <Button variant="contained">Прийняти</Button>
+              <Button onClick={onReject} variant="outlined">
+                Відхилити
+              </Button>
+            </Box>
+          </Modal>
+        </Background>
+      )}
+      {requustTo && (
+        <Background>
+          <Modal>
+            <p variant="h2">Запит на діключення до {requustTo}</p>
+            <Box>
+              <Button onClick={onReject} variant="outlined">
+                Відхилити
+              </Button>
+            </Box>
+          </Modal>
+        </Background>
+      )}
     </div>
   );
 }

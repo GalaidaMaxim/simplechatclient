@@ -1,7 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import { BoxStyled } from "./Styled";
 
-export const UsersList = ({ users, socket }) => {
+export const UsersList = ({ users, socket, setRequestTo }) => {
   const createRoomWith = (username) => {
     return () => {
       socket.send(
@@ -10,6 +10,7 @@ export const UsersList = ({ users, socket }) => {
           username,
         })
       );
+      setRequestTo(username);
     };
   };
   return (
