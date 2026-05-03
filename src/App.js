@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { MainPage } from "./components/MainPage";
-import { SeccondPage } from "./components/SeccondPage";
-import { Chat } from "./components/Chat";
-import { Routes, Route } from "react-router";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [name, setName] = useState("");
@@ -31,8 +29,6 @@ function App() {
             />
           }
         />
-        <Route element={<SeccondPage />} path="sp" />
-        <Route element={<Chat />} path="chat" />
       </Routes>
     </div>
   );

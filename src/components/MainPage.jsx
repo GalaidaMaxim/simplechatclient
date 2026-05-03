@@ -84,6 +84,16 @@ export const MainPage = ({
       })
     );
   };
+
+  const onAccept = (username) => {
+    socket.send(
+      JSON.stringify({
+        command: "createRoomAccept",
+        username,
+      })
+    );
+  };
+
   return (
     <div>
       {!socket && (
@@ -114,6 +124,7 @@ export const MainPage = ({
             <Typography variant="h2">
               Запит приєднання коритсувача {requestUser}
               <Box>
+                <Button onClick={() => onAccept(requestUser)}>Прийняти</Button>
                 <Button onClick={() => onReject(requestUser)}>Відхилити</Button>
               </Box>
             </Typography>
